@@ -8,8 +8,9 @@ fm = Furnace_Model();
 
 %% Tune settings
 
-% Flag to store derivatives
-fm.settings.store_derivatives = true;
+% Flag to store derivatives using symbolic or automatic differentiation
+fm.settings.symbolic_differentiation = true;
+fm.settings.automatic_differentiation = true;
 
 % Flag to use the point-iterative method for computing gradients (default = false)
 fm.settings.point_iterative_derivative = true;
@@ -54,6 +55,9 @@ fm.settings.optimizer = 'comparison'; % Compares the two optimization procedures
 % values), neccessary when using projected gradient descent
 fm.settings.mechanical_loss = true;  
 
+% Condition for imposing hard constraints on mechanical performance
+fm.settings.mechanical_constraints = true;
+
 % Changing the discretization method for the wall (default is FVM)
 fm.discretization_method = 'FEM';
 fm.discretization_method = 'FVM';
@@ -61,8 +65,14 @@ fm.discretization_method = 'FVM';
 % Dictates whether the power input has been provided apriori
 fm.settings.power_input = true;
 
-% Dictates whether the desired temperature curve is provided (for plotting purposes)
+% Dictates whether the entire desired temperature curve is provided (for plotting purposes)
+fm.settings.desired_temp_curve_specified = false;
+
+% Dictates whether the desired temperature curve is specified (simulation)
 fm.setting.desired_temperature_curve = true;
+
+% Turn on to include temperature distribution gradient of the alloy
+fm.settings.alloy_temperature_distribution = true;
 
 %% Changing Parameters
 
@@ -71,3 +81,4 @@ fm.model.mech_w = 50;
 
 % Updating all furnace model fields with new parameters
 fm = Update_Furnace_Model(fm, t);
+

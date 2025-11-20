@@ -19,7 +19,7 @@ function [T_h, fm] = Compute_Heater_Temperature(Q_power, T_w, T_f, T_ms, T_h_gue
     T_h = fzero(f, T_h_guess); 
 
     % Derivatives
-    if fm.settings.store_derivatives && fm.settings.point_iterative_derivative
+    if fm.settings.symbolic_differentiation && fm.settings.point_iterative_derivative
         [fm, ~] = Compute_dT_h_dx(fm, A, B, T_h, T_ms, T_w, k, dt);
     end
 end

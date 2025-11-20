@@ -53,7 +53,7 @@ function wall = Wall_Front(walls)
     wall.beta(end) = 2 * wall.beta(end);
     
     %% Initial and Boundary Conditions
-    wall.T_initial = 297.15 * ones(1, walls.Nx);  % Initializes temperature (K)
+    wall.T_initial = walls.T_initial * ones(1, walls.Nx);  % Initializes temperature (K)
     wall.T_out = walls.T_out;          % Outside air temperature (K)
     wall.h_out = walls.h_out;          % Convective heat transfer coefficient outside (W/m²·K)
     wall.epsilon_w = 0;                % No heaters

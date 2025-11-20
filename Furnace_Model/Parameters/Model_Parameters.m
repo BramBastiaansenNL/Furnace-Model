@@ -10,14 +10,16 @@ function model = Model_Parameters()
     %% Optimization Weights
     model.power_w = 1;                           % Power weight
     model.time_w = 10;                           % Time weight
-    model.mech_w = 500;                          % Mechanical properties weight
-    model.w_YS = 1/3;       % Weight for yield strength
-    model.w_UTS = 1/3;      % Weight for ultimate tensile strength
-    model.w_UE = 1/3;       % Weight for uniform elongation
+    model.mech_w = 1000;                          % Mechanical properties weight
+    model.w_YS = 2;       % Weight for yield strength
+    model.w_UTS = 1;      % Weight for ultimate tensile strength
+    model.w_UE = 0.2;       % Weight for uniform elongation
+    model.mech_w_inner = 0.5;
+    model.mech_w_outer = 0.5;
 
     %% Minimum Mechanical Properties
-    model.sigma_u_min = 330;              % Minimum ultimate tensile strength (MPa) at 200 K
-    model.epsilon_u_min = 8;              % Minimum uniform elongation (3%) at 200 K
-    model.sigma_y_min = 310;              % Minimum yield strength (MPa) at 200 K
+    model.sigma_u_min = 330;              % Minimum ultimate tensile strength (MPa) K
+    model.epsilon_u_min = 8;              % Minimum uniform elongation (8%) at K
+    model.sigma_y_min = 310;              % Minimum yield strength (MPa) at K
     model.mech_reward_gain = 0.5;         % Reward-penalty gain
 end

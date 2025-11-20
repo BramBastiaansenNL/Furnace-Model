@@ -23,8 +23,6 @@ function J = Compute_Newton_Raphson_Jacobian(dt, T_ms, T_h, fm)
     J41 = -dt/constants.m_hCp_h * (constants.h_h_fA_h);
     J42 = 0;
     J43 = -dt/constants.m_hCp_h * (4*constants.rad_constant_h_ms * T_ms^3);
-    % J44 = 1 + dt/constants.m_hCp_h * (4*constants.rad_constant_h_ms * T_h^3 + ...
-    %       16*constants.rad_constant_h_w * T_h^3 + constants.h_h_fA_h);
     J44 = 1 + dt/constants.m_hCp_h * (4*constants.rad_constant_h_ms * T_h^3 + ...
           16*constants.rad_constant_h_w * T_h^3 + constants.h_h_fA_h);
     

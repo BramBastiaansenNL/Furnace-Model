@@ -15,5 +15,5 @@ function furnace = Furnace_Parameters()
     furnace.h_f_w = 0.223288;       % Convective heat transfer coefficient between furnace and wall (W/m²·K)
     furnace.h_ms_f = 9.269076;      % Convective heat transfer coefficient between furnace and metal sheet (W/m²·K)
     furnace.h_f_al = 37.901044;      % Convective heat transfer coefficient between furnace and alloy (W/m²·K)
-    furnace.h_h_f = 49.999924;       % Convective heat transfer coefficient between furnace and heating elements (W/m²·K)
+    furnace.h_h_f = 50;       % Convective heat transfer coefficient between furnace and heating elements (W/m²·K)
 end

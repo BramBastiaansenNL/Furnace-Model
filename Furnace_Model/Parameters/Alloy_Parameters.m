@@ -16,5 +16,13 @@ function alloy = Alloy_Parameters()
     alloy.T_initial = 297.15; % Initial alloy temperature (K)
     alloy.A = 2 * alloy.width_main_body * alloy.length_main_body + ...
               alloy.width_bridge * alloy.length_bridge;   % Surface area of alloy exposed to furnace (m²)
-    % alloy.L = 1.0;      % Character surface area exposed to fan (m²)
+
+    %% Extension (Cylinder)
+    alloy.L = 0.1;      % Axial length
+    alloy.N = 10;       % Discretization number of nodes
+    alloy.R = 0.01;     % Cylinder radius (m)
+    alloy.dr = alloy.R / (alloy.N - 1);
+    alloy.rho = alloy.density;
+    alloy.k = 0.1;       % Thermal conductivity coefficient
+    alloy.rep_nodes = 2;
 end

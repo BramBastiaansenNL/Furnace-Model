@@ -13,17 +13,33 @@ function Plot_Results(fm, t, T_f_desired, varargin)
         T_ms = results.T_ms_curve;
         T_h = results.T_h_curve;
         Power_Curve = results.Power_curve;
-        mechanical_properties = results.mechanical_properties;
-        phase_fractions = results.phase_fractions;
 
-        % Plot mechanical properties
-        Plot_Mechanical_Properties(t, T_m, mechanical_properties, phase_fractions, fm)
-
-        if results.alpha_opt
-            alpha_opt = results.alpha_opt;
-            Plot_Time_Temperature_Curves(t, T_f_desired, T_f, T_walls, T_m, T_ms, T_h, fm, alpha_opt)
+        % Representative nodes
+        if isfield(results,'rep_nodes')
+            rep_nodes = results.rep_nodes;
         else
-            Plot_Time_Temperature_Curves(t, T_f_desired, T_f, T_walls, T_m, T_ms, T_h, fm)
+            rep_nodes = 1; % backward compatibility (lumped alloy)
+        end
+        
+        if isfield(results,'mechanical_properties')
+            mechanical_properties = results.mechanical_properties;
+            phase_fractions = results.phase_fractions;
+        
+            % Plot mechanical properties
+            if fm.settings.alloy_temperature_distribution
+                Plot_Mechanical_Properties_Distribution(t, T_m, mechanical_properties, ...
+                                                        phase_fractions, fm, rep_nodes)
+                Plot_Alloy_Temperature_Distribution(T_m, fm);
+            else
+                Plot_Mechanical_Properties(t, T_m, mechanical_properties, phase_fractions, fm)
+            end
+        end
+        
+        if isfield(results, 'alpha_opt') && ~isempty(results.alpha_opt)
+            alpha_opt = results.alpha_opt;
+            Plot_Time_Temperature_Curves(t, T_f_desired, T_f, T_walls, T_m, T_ms, T_h, fm, alpha_opt, rep_nodes)
+        else
+            Plot_Time_Temperature_Curves(t, T_f_desired, T_f, T_walls, T_m, T_ms, T_h, fm, 1, rep_nodes)
         end
 
     % Single simulation results

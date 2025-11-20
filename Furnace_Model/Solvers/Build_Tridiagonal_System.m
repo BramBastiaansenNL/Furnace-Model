@@ -28,7 +28,7 @@ function [gamma, alpha, beta, b, fm] = Build_Tridiagonal_System(i, wall, T_wall_
     b(Nx) = heat_capacity(Nx) * T_wall_old(Nx) + h_out * A_w * T_out;
 
     % Store vectors for derivative purposes
-    if fm.settings.store_derivatives
+    if fm.settings.symbolic_differentiation
         fm.matrices.alpha_1_series{i}{k} = alpha(1);
         % Copy alpha_1 for side2
         if i == 1

@@ -8,10 +8,6 @@ function fm = Compute_Full_Derivative(T_walls, T_heater, fm)
     Ki = fm.controller.Ki;          % Integral gain
     Kd = fm.controller.Kd;          % Derivative gain
     n_heaters = fm.controller.n_heaters;
-
-    % A = fm.constants.rad_constant_h_ms + fm.constants.rad_constant_h_w;  % coefficient for T_h^4
-    % B = fm.constants.h_h_fA_h;   % coefficient for T_h
-
     Nx = fm.walls.Nx;
     sigma = fm.heater.sigma;
     VF_h_w = fm.heater.VF_h_w;
@@ -23,9 +19,6 @@ function fm = Compute_Full_Derivative(T_walls, T_heater, fm)
         % dP^(k) / dx
         [fm, dP_dx] = Compute_dP_dx(fm, k, Kp, Kd, Ki, dt, n_heaters);
     
-        % dT_h^(k+1) / dx
-        % [fm, dT_h_dx] = Compute_dT_h_dx(fm, A, B, T_heater(k), T_metal_sheet(k), T_walls(:,:,k), k+1, dt);
-
         % dT^(k+1) / dx and dT_w^(k+1) / dx
         if strcmpi(fm.discretization_method, 'FVM')
             [fm, dT_dx] = Compute_Monolithic_Sensitivities_FVM(fm, T_heater(k+1), T_walls(:,:,k+1), T_walls(:,:,k), ...

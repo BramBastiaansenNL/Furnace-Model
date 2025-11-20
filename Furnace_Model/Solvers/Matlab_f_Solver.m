@@ -15,7 +15,7 @@ function [T_walls, T_furnace, T_alloy, T_metal_sheet, Power_Curve, T_heater, fm]
         % Compute power input into the system
         [Power_Curve(k), integral_error, prev_error, fm] = ...
             Compute_Power_Supply(T_f_desired, T_furnace(k), integral_error, ...
-                                 prev_error, dt, fm);
+                                 prev_error, dt, fm, k);
 
         % Compute the temperature-dependent specfic heat capacity of the alloy
         if fm.settings.alloy_present
@@ -28,14 +28,14 @@ function [T_walls, T_furnace, T_alloy, T_metal_sheet, Power_Curve, T_heater, fm]
         % Solve system of PDEs and ODEs numerically
         if k == 1
             % First step
-            [T_furnace(k+1), T_alloy(k+1), T_walls, T_metal_sheet(k+1), T_heater(k+1)] = ...
-                Solve_f_Solve(T_furnace(k), T_alloy(k), T_walls, T_metal_sheet(k), T_heater(k), fm, Power_Curve(k));
+            [T_furnace(k+1), T_alloy(k+1), T_walls(:, :, k+1), T_metal_sheet(k+1), T_heater(k+1)] = ...
+                Solve_f_Solve(T_furnace(k), T_alloy(k), T_walls(:, :, k), T_metal_sheet(k), T_heater(k), fm, Power_Curve(k), k+1);
         
         else
             % Subsequent steps extrapolate initial guesses
-            [T_furnace(k+1), T_alloy(k+1), T_walls, T_metal_sheet(k+1), T_heater(k+1)] = ...
-                Solve_f_Solve(T_furnace(k), T_alloy(k), T_walls, T_metal_sheet(k), T_heater(k), fm, Power_Curve(k), ...
-                                   T_furnace(k-1), T_alloy(k-1), T_metal_sheet(k-1), T_heater(k-1));
+            [T_furnace(k+1), T_alloy(k+1), T_walls(:, :, k+1), T_metal_sheet(k+1), T_heater(k+1)] = ...
+                Solve_f_Solve(T_furnace(k), T_alloy(k), T_walls(:, :, k), T_metal_sheet(k), T_heater(k), fm, Power_Curve(k), k+1, ...
+                                   T_furnace(k-1), T_alloy(k-1), T_walls(:, :, k-1), T_metal_sheet(k-1), T_heater(k-1));
         end
     end
 end

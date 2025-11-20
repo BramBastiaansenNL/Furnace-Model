@@ -34,7 +34,6 @@ function [Q_furnace_wall, Q_furnace_alloy, Q_heater_ms, Q_ms_furnace, Q_heater_f
     Q_heater_ms = sigma * VF_h_ms * epsilon_ms * A_ms * (T_h^4 - T_ms^4);
     Q_ms_furnace = h_ms_f * A_ms * (T_ms - T_f);
     Q_heater_furnace = h_h_f * A_h * (T_h - T_f);
-    % Q_heater_wall = h_rad * A_w * sum(T_h^4 - T_w_surface_exposed.^4);
     Q_heater_wall = h_rad * A_w * sum(T_h^4 - T_w_old_exposed.^4) ...
                     - 4 * h_rad * A_w * sum(T_w_old_exposed.^3 .* (T_w_surface_exposed - T_w_old_exposed));
 end

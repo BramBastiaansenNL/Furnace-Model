@@ -46,7 +46,24 @@ function [cached_result, found] = Furnace_Simulation_Cache(x, fm, action)
             end
 
             % Compute the mechanical properties
-            [M, X] = Compute_Mechanical_Properties(total_time, T_m_curve, fm);
+            if fm.settings.alloy_temperature_distribution
+                N = size(T_m_curve,1);
+                rep_nodes = Get_Representative_Alloy_Nodes(N, fm.alloy.rep_nodes);  % e.g. inner, outer, 2 mids
+                
+                M = cell(length(rep_nodes),1);
+                X = cell(length(rep_nodes),1);
+            
+                for j = 1:length(rep_nodes)
+                    node_idx = rep_nodes(j);
+                    [M{j}, X{j}] = Compute_Mechanical_Properties(total_time, T_m_curve(node_idx,:), fm);
+                end
+            
+                % Store them explicitly
+                last_result.rep_nodes = rep_nodes;
+            else
+                [M, X] = Compute_Mechanical_Properties(total_time, T_m_curve, fm);
+                last_result.rep_nodes = 1;
+            end
 
             % Store results
             last_result.T_w_curve = T_w_curve;

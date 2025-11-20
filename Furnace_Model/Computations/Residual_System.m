@@ -1,4 +1,4 @@
-function [F, T_w, fm] = Residual_System(T_f, T_a, T_ms, T_h, ...
+function [F, T_w, fm, T_alloy] = Residual_System(T_f, T_a, T_ms, T_h, ...
                                     T_f_old, T_a_old, T_w_old, T_ms_old, T_h_old, Q_power, fm, k)
     %% Computes the residual system for Matlab's fsolve function solver
     
@@ -15,6 +15,15 @@ function [F, T_w, fm] = Residual_System(T_f, T_a, T_ms, T_h, ...
         [T_w, fm] = Constant_Wall_Temperature(T_w_old, fm, k);
     end
     
+    % Alloy temperature distribution update
+    if fm.settings.alloy_temperature_distribution
+        [T_alloy, fm] = FVM_Alloy_Solver(T_f, T_a_old, fm);
+        T_a = T_alloy(fm.alloy.N);
+        T_a_old = T_a_old(fm.alloy.N);
+    else
+        T_alloy = T_a; % Fallback: lumped temperature only
+    end
+
     % Heat transfers
     [Q_f_w, Q_f_alloy, Q_h_ms, Q_ms_f, Q_h_f, Q_h_w] = ...
         Compute_Heat_Transfers(T_w(:,1), T_f, T_a, T_ms, T_h, fm, T_w_old(:,1));

@@ -69,7 +69,7 @@ function [T_w_new, fm] = FEM_Wall_Solver(T_w_old, T_furnace, T_heater, fm, k)
         end
 
         % Store vectors for derivative purposes
-        if fm.settings.store_derivatives
+        if fm.settings.symbolic_differentiation
             fm.matrices.B_11_series{i}{k} = B(1,1);
             % Copy h_rad_1 for side2
             if i == 1

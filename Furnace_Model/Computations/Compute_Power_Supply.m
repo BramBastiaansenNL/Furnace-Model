@@ -11,7 +11,7 @@ function [P_input, integral_error, prev_error, fm] = ...
 
     % Update errors
     error = T_f_desired - T_f;
-    derivative_error = (error - prev_error) / dt;  % NEEDS CHANGING MAYBE!
+    derivative_error = (error - prev_error) / dt; 
         
     % Compute power input using PID
     P_unsaturated = Kp * error + Ki * prev_integral_error + Kd * derivative_error;

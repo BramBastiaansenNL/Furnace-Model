@@ -12,10 +12,18 @@ function fm = Update_Furnace_Model(fm, t, N)
         fm = Change_Grid_Points(fm, fm.walls.Nx);
     end
 
+    if fm.settings.alloy_temperature_distribution
+        fm.alloy.A = 2* pi * fm.alloy.R * fm.alloy.L;
+        fm.alloy.volume = pi * fm.alloy.R^2 * fm.alloy.L;
+        fm.alloy.mass = fm.alloy.density * fm.alloy.volume;
+    end
+
     % Reset derivative storage with updated model
-    dT_f_desired_dx = fm.derivatives.dT_f_desired_dx;
-    fm.derivatives = Derivative_Storage(fm);
-    fm.derivatives.dT_f_desired_dx = dT_f_desired_dx;
+    if fm.settings.symbolic_differentiation
+        dT_f_desired_dx = fm.derivatives.dT_f_desired_dx;
+        fm.derivatives = Derivative_Storage(fm);
+        fm.derivatives.dT_f_desired_dx = dT_f_desired_dx;
+    end
 
     % Recompute system constants
     fm.constants = System_Constants(fm);

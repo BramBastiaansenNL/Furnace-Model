@@ -25,7 +25,7 @@ function [T_walls, T_furnace, T_alloy, T_metal_sheet, Power_Curve, T_heater, fm]
     end
 
     % Compute derivatives
-    if fm.settings.store_derivatives
+    if fm.settings.symbolic_differentiation
         fm = Compute_Full_Derivative(T_walls, T_heater, fm);
     end
 end

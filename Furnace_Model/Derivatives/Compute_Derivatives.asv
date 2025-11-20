@@ -1,0 +1,35 @@
+function derivatives = Compute_Derivatives(fm, k, iter)
+    %% Computes all derivatives needed for optimization
+        
+    % Unpack constants
+    derivatives = fm.derivatives;
+    % Nx = fm.walls.Nx;
+
+    %% Unpack relevant derivatives
+    dR_dT      = derivatives.dR_dT;        % Jacobian from Newton-Raphson
+    dR_dT_prev = derivatives.dR_dT_prev;   % - Identity
+    dR_dT_h    = derivatives.dR_dT_h;      % From Compute_Heater_Temperature
+    dR_dT_w1   = derivatives.dR_dT_w1;     % From Compute_Air_Density(T_furnace, fm)
+
+    % If this is the first time step: (k=1) in the implicit loop
+    if k == 2 && iter == 1
+        dT_dx_prev = derivatives.dT_dx_series{k-1};               % dT^(k)/dx
+        dT_w1_dx = fm.derivatives.dT_w1_dx_series{k};
+    else
+        dT_dx_prev = derivatives.dT_dx_series{k-1};               % dT^(k)/dx
+        dT_w1_dx = derivatives.dT_w1_dx_series{k};
+    end
+
+    %% Gather dT_h_dx (dT_h^(k+1) / dx)
+    dT_h_dx = fm.derivatives.dT_h_dx_series{k};
+
+    %% Compute dT_dx (dT^(k+1) / dx)
+    dT_dx = Compute_dT_dx(fm, dR_dT, dR_dT_prev, dT_dx_prev, dR_dT_h, dT_h_dx, dR_dT_w1, dT_w1_dx);
+
+    %% Compute dT_alloy_dx (dT_a^(k+1) / dx)
+    dT_alloy_dx = derivatives.dT_alloy_dT * dT_dx;
+
+    %% Store results
+    derivatives.dT_dx_series{k} = dT_dx;
+    derivatives.dT_alloy_dx_series{k} = dT_alloy_dx;
+end

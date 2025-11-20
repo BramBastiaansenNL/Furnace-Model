@@ -2,7 +2,7 @@ function heater = Heater_Parameters(furnace)
     % Struct for the parameters of the thin metal sheet
 
     %% Physical Parameters
-    heater.mass = 82.453652;
+    heater.mass = 82.454;
     heater.Cp = 100;
     heater.A = 10;
        

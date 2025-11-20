@@ -25,7 +25,7 @@ function [T_w_curve, T_f_curve, T_a_curve, T_ms_curve, Power_curve, T_h_curve, f
         fm = Remove_Alloy(fm);
     end
     
-    if fm.settings.store_derivatives
+    if fm.settings.symbolic_differentiation
         dP_dx = zeros(1, 2 * N);
     end 
 
@@ -50,13 +50,13 @@ function [T_w_curve, T_f_curve, T_a_curve, T_ms_curve, Power_curve, T_h_curve, f
         idx = idx + Nt(i);
 
         % Assemble derivatives in their correct format
-        if fm.settings.store_derivatives
+        if fm.settings.symbolic_differentiation
             dP_dx = Assemble_Derivatives(dP_dx, fm, i);
         end
     end
     
     % Sum up the total derivative
-    if fm.settings.store_derivatives
+    if fm.settings.symbolic_differentiation
         fm.derivatives.dP_dx_full = dP_dx;
     end
 end

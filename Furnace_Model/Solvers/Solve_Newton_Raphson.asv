@@ -1,0 +1,89 @@
+function [T_f_new, T_a_new, T_w_new, T_ms_new, T_h_new, iterations, fm] = ...
+    Solve_Newton_Raphson(T_f_old, T_a_old, T_w_old, T_ms_old, T_h_old, fm, Q_power, k, varargin)
+    %% Newton-Raphson solver for implicit furnace, alloy, metal sheet and wall temperature update
+    
+    % If debugging is enabled, call debugging version and return
+    if fm.settings.debugging || fm.settings.debug_jacobian || fm.settings.dynamic_residual_plotting
+        [T_f_new, T_a_new, T_w_new, T_ms_new, T_h_new, iterations, fm] = ...
+            Solve_Newton_Raphson_Debugging(T_f_old, T_a_old, T_w_old, T_ms_old, T_h_old, fm, Q_power, k, varargin{:});
+        return;
+    end
+
+    % Extract older temperature history if available
+    if ~isempty(varargin)
+        T_f_older = varargin{1};
+        T_a_older = varargin{2};
+        T_ms_older = varargin{3};
+        T_h_older = varargin{4};
+    end
+
+    % Parameters    
+    model = fm.model;
+    dt = model.dt;                  % Time-steps           
+    max_iter = 100;                 % Maximum iterations for Newton-Raphson
+    tol = 1e-4;                     % Convergence tolerance
+    fm.settings.NR_converged = false;  % Reset convergence flag
+
+    % Initial guesses
+    if nargin < 10
+        [T_f, T_a, T_w, T_ms, T_h] = Compute_Initial_Guesses(T_f_old, T_a_old, T_w_old, T_ms_old, T_h_old);
+    else
+        [T_f, T_a, T_w, T_ms, T_h] = Compute_Initial_Guesses(T_f_old, T_a_old, T_w_old, T_ms_old, T_h_old, ...
+                                                             T_f_older, T_a_older, T_ms_older, T_h_older);
+    end
+
+    % Compute heater temperature explicitly
+    [T_h_new, fm] = Compute_Heater_Temperature(Q_power, T_w_old, T_f_old, T_ms_old, T_h, ...
+                                     k, fm);
+    
+    % Initialize residual storage
+    residual_norms = zeros(max_iter, 1);
+
+    % Newton-Raphson Iteration
+    for iter = 1:max_iter
+
+        % Save previous guess
+        T_w_prev = T_w;
+        
+        % Compute the residual system
+        [F, T_w, fm] = Residual_System(T_f, T_a, T_ms, T_h_new, T_f_old, T_a_old, T_w_old, T_ms_old, ...
+                             fm);
+
+        % Update wall temperature
+        dT_w = T_w - T_w_prev;
+
+        % Compute the Jacobian matrix
+        J = Compute_Newton_Raphson_Jacobian(dt, T_ms, fm);
+
+        % Solve Newton-Raphson update
+        dT = - J \ F;
+        
+        % Update temperatures
+        T_f = T_f + dT(1);
+        T_a = T_a + dT(2);
+        T_ms = T_ms + dT(3);
+
+        % Store residual norm
+        residual_norms(iter) = norm(dT);
+
+        % Store and compute derivatives 
+        if fm.settings.symbolic_differentiation
+            fm.derivatives.dR_dT = J;
+            fm.derivatives = Compute_Derivatives(fm, k);
+        end
+
+        % Check convergence
+        converged = Check_Convergence(residual_norms(iter), dT_w, tol);
+        if converged
+            fm.settings.NR_converged = true;
+            break
+        end
+    end
+    
+    % Return updated temperatures
+    T_f_new = T_f;
+    T_a_new = T_a;
+    [T_w_new, fm] = Update_Wall_Temperature(T_w_old, T_f, T_h_new, fm, k);
+    T_ms_new = T_ms;
+    iterations = iter;
+end
