@@ -13,13 +13,14 @@ function constraints = Model_Constraints()
     constraints.t_max = 3600 * 10; % Maximum process duration (s)
 
     %% Process Constraints
-    constraints.R_max = 20;   % Max heating rate (K/s)
+    constraints.R_heat_max = 0.1587;    % (K/s)
+    constraints.R_cool_max = 0.0278;    % (K/s)
 
     %% Mechanical Contraints
     constraints.YS_min = 310;  % Minimum Yield Strength
     constraints.YS_max = 600;  % Maximum Yield Strength
     constraints.UTS_min = 330; % Minimum Ultimate Tensile Strength
     constraints.UTS_max = 650; % Maximum Ultimate Tensile Strength
-    constraints.UE_min = 0.08;    % Minimum Uniform Elongation
-    constraints.UE_max = 1;   % Maximum Uniform Elongation
+    constraints.UE_min = 8;    % Minimum Uniform Elongation
+    constraints.UE_max = 100;   % Maximum Uniform Elongation
 end

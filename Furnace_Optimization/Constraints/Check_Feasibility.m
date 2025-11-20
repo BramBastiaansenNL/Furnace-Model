@@ -1,8 +1,5 @@
-function is_feasible = Check_Feasibility(x, constraints, furnace_model)
-    % Checks if the solution x = [T_f, t] satisfies all mechanical constraints
-    
-    % Determine dimension
-    N = numel(x) / 2;
+function is_feasible = Check_Feasibility(x, constraints, furnace_model, N)
+    %% Checks if the solution x = [T_f, t] satisfies all mechanical constraints
 
     % Get constraint violations
     [c, ~] = Get_Constraints(x, furnace_model, constraints, N);

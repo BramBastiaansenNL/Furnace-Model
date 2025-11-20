@@ -22,6 +22,10 @@ function Add_Paths2()
     furnaceModelPath = fullfile(repoRoot, 'Furnace_Model');
     furnaceOptPath = fullfile(repoRoot, 'Furnace_Optimization');
     furnaceDebuggingPath = fullfile(repoRoot, 'Debugging_Folder');
+    modelCalibrationPath = fullfile(repoRoot, 'Model_Calibration');
+    measurementsPath = fullfile(repoRoot, 'Measurements');
+    automaticDerivativePath = fullfile(repoRoot, 'Automatic_Derivatives');
+    resultsPath = fullfile(repoRoot, 'Optimization_Results');
 
     % Define paths located one level up in 'calculations' or similar
     zugprobenPath = fullfile(parentDir, '02_Data_Analysis', 'Zugproben');
@@ -33,6 +37,10 @@ function Add_Paths2()
     addpath(genpath(furnaceModelPath));
     addpath(genpath(furnaceOptPath));
     addpath(genpath(furnaceDebuggingPath));
+    addpath(genpath(modelCalibrationPath));
+    addpath(genpath(measurementsPath));
+    addpath(genpath(automaticDerivativePath));
+    addpath(genpath(resultsPath));
     
     addpath(genpath(zugprobenPath));
     addpath(genpath(optimalControlPath));

@@ -15,12 +15,12 @@ function dJ_dx = Compute_Cost_Gradient(fm, constraints, cached_result)
     dJ_time_dx = dJ_time_dt * dt_dx; % [1 x 2N+1] row vector
 
     %% Power component: J_power = sum P_k * dt / P_max
-    dJ_power_dx = dt / fm.controller.P_max * derivatives.dP_dx_full;
+    dJ_power_dx = 1 / (fm.controller.P_max * fm.model.Nt) * derivatives.dP_dx_full;
 
     if fm.settings.mechanical_loss
         M = cached_result.mechanical_properties;
         X = cached_result.phase_fractions;
-        dJ_mech_dx = Compute_Mechanical_Loss_Gradient(M, X, dt_dx, fm);
+        dJ_mech_dx = Compute_Mechanical_Loss_Gradient(M, X, dt_dx, fm, derivatives);
         
         %% Sum all components
         dJ_dx = time_w * dJ_time_dx + power_w * dJ_power_dx + mech_w * dJ_mech_dx;

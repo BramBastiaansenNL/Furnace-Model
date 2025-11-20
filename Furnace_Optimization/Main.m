@@ -14,8 +14,8 @@ furnace_model.settings = Select_Optimization_Model_Settings(furnace_model.settin
 %% Run the optimization
 
 % Initial guesses (determines the number of optimization variables)
-t_init = [1] * 3600;                 % Initial total process time (s)
-T_f_init = [400, 500, 550];                       % Constant temperature curve (K)   
+t_init = [0.5] * 3600;                 % Initial total process time (s)
+T_f_init = [400, 600, 700];          % Constant temperature curve (K)   
 N = 3;
 initial_guess = [T_f_init, t_init];
 
@@ -26,7 +26,14 @@ optimization_time = toc;
 
 %% Display Optimization results
 fprintf('\nOptimization Completed in %.4f seconds\n', optimization_time);
-fprintf('Optimal Desired (local minimum) Temperature Values(s): %.2f (K) = %.2f (C)\n', T_f_opt, T_f_opt - 273.15);
+for i = 1:numel(T_f_opt)
+    fprintf('Optimal Furnace Temp %d : %.2f K (%.2f °C)\n', ...
+        i, T_f_opt(i), T_f_opt(i) - 273.15);
+end
 fprintf('Optimal Process Time(s): %.2f seconds = %.2f hours\n', t_opt, t_opt/3600);
 fprintf('Optimal Cost Function Value: %.4f\n', J_hist(end));
 Plot_Results(furnace_model, t_opt, T_f_opt, results)
+
+% Save results automatically
+Save_Optimization_Results(furnace_model, constraints, initial_guess, N, ...
+    T_f_opt, t_opt, J_hist, results, optimization_time);

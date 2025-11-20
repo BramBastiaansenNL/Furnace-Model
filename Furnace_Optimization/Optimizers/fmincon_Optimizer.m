@@ -1,4 +1,4 @@
-function [T_f_opt, t_opt, J_hist, results] = ...
+function [T_f_opt, t_opt, J_hist, results, time_log] = ...
     fmincon_Optimizer(furnace_model, constraints, initial_guess, N)
     %% Optimize the furnace time-temperature curve with constant/linear/spline interpolation
 
@@ -26,6 +26,31 @@ function [T_f_opt, t_opt, J_hist, results] = ...
     if furnace_model.settings.compare_cost_gradients
         checkGradients(J, x_init, Display="on") 
     end
+
+    %% Time logging
+    start_time = tic;
+    time_log = [];
+    user_output_fcn = options.OutputFcn;
+    options.OutputFcn = @(x,optimValues,state) CombinedOutputFcn(x,optimValues,state,user_output_fcn);
+    % Nested function for combined behavior
+    function stop = CombinedOutputFcn(x, optimValues, state, userFcn)
+        stop = false;
+        % Call user’s output function (prints progress)
+        if ~isempty(userFcn)
+            stop_user = userFcn(x, optimValues, state);
+            if stop_user
+                stop = true;
+            end
+        end
+        % Log elapsed time
+        switch state
+            case 'init'
+                time_log = 0;
+            case 'iter'
+                time_log(end+1) = toc(start_time);
+        end
+    end
+    %%
 
     % Solve the optimization problem
     x_opt = fmincon(J, x_init, [], [], Aeq, beq, lb, ub, nonlinear_constraints, options);

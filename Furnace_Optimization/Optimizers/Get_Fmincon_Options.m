@@ -5,7 +5,7 @@ function options = Get_Fmincon_Options(furnace_model)
     settings = furnace_model.settings;
 
     % Determine if analytical gradient is used
-    use_derivatives = isfield(settings, 'store_derivatives') && settings.store_derivatives;
+    use_derivatives = isfield(settings, 'symbolic_differentiation') && settings.symbolic_differentiation;
 
     % Create base optimization options
     options = optimoptions('fmincon', ...
